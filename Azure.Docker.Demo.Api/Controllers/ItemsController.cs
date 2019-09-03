@@ -1,5 +1,7 @@
+using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Azure.Docker.Datalayer;
 using Azure.Docker.Datalayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -48,18 +50,24 @@ namespace Azure.Docker.Demo.Api.Controllers
        [HttpGet("work")]
        public IActionResult Work()
        {
-           //simulate 5 minutes of 100% work
-           var timer = new Stopwatch();
-           timer.Start();
-           while(true)
-           {
-               Thread.Sleep(1000);
-               if (timer.ElapsedMilliseconds == 300000)
-               {
-                   break;
-               }
-           }
-           timer.Stop();
+           //simulate 5 minutes of 100% work accross all threads.
+           for (int i = 0; i < Environment.ProcessorCount; i++)
+            {
+                Task.Run(() => 
+                {
+                    var timer = new Stopwatch();
+                    timer.Start();
+                    while(true)
+                    {
+                        if (timer.ElapsedMilliseconds == 300000)
+                        {
+                            break;
+                        }
+                    }
+                    timer.Stop();
+                });
+            }
+           
            return Ok();
        }
     }
