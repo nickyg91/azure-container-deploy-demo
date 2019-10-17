@@ -50,7 +50,7 @@ namespace Azure.Docker.Demo.Api.Controllers
        [HttpGet("work")]
        public IActionResult Work()
        {
-           //simulate 5 minutes of 100% work accross all threads.
+           //simulate 2 minutes of 100% work accross all threads.
            for (int i = 0; i < Environment.ProcessorCount; i++)
             {
                 Task.Run(() => 
@@ -59,7 +59,7 @@ namespace Azure.Docker.Demo.Api.Controllers
                     timer.Start();
                     while(true)
                     {
-                        if (timer.ElapsedMilliseconds == 300000)
+                        if (timer.ElapsedMilliseconds == 120000)
                         {
                             break;
                         }
